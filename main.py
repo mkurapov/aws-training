@@ -24,16 +24,17 @@ np.savetxt('./data/iris.csv', joined_iris, delimiter=',',
 
 WORK_DIRECTORY = 'data'
 
-# train_input = sagemaker_session.upload_data(
-#     WORK_DIRECTORY, key_prefix="{}/{}".format(prefix, WORK_DIRECTORY))
+train_input = sagemaker_session.upload_data(
+    WORK_DIRECTORY, key_prefix="{}/{}".format(prefix, WORK_DIRECTORY))
 
-# script_path = 'scikit_learn_iris.py'
+script_path = 'scikit_learn_iris.py'
 
-# sklearn = SKLearn(
-#     entry_point=script_path,
-#     train_instance_type="ml.c4.xlarge",
-#     role=role,
-#     sagemaker_session=sagemaker_session,
-#     hyperparameters={'max_leaf_nodes': 30})
+sklearn = SKLearn(
+    entry_point=script_path,
+    train_instance_type="ml.c4.xlarge",
+    role=role,
+    sagemaker_session=sagemaker_session,
+    hyperparameters={'max_leaf_nodes': 30})
 
+# This is what does the actual training:
 # sklearn.fit({'train': train_input})
