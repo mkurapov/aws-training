@@ -33,8 +33,7 @@ sklearn = SKLearn(
     entry_point=script_path,
     train_instance_type="ml.c4.xlarge",
     role=role,
-    sagemaker_session=sagemaker_session,
-    hyperparameters={'max_leaf_nodes': 30})
+    sagemaker_session=sagemaker_session
 
 # This is what does the actual training:
 # sklearn.fit({'train': train_input})
