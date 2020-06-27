@@ -4,3 +4,6 @@ https://github.com/awslabs/amazon-sagemaker-examples/blob/master/sagemaker-pytho
 
 ### Start
 Put the config file in `C:\Users\USERNAME\.aws\config`
+
+### Signin
+https://034717217050.signin.aws.amazon.com/console
