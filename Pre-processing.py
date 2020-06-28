@@ -34,10 +34,9 @@ def cleanup(row):
     return tweet_text
 
 
-CHUNK_SIZE = 10000
+CHUNK_SIZE = 100000
 count = CHUNK_SIZE
 df_chunks = pd.read_csv('data/Training_Data_TAGGED.csv',
-                        skiprows=range(1, 1500000),
                         chunksize=CHUNK_SIZE)
 
 for df in df_chunks:
