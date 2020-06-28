@@ -7,3 +7,7 @@ Put the config file in `C:\Users\USERNAME\.aws\config`
 
 ### Signin
 https://034717217050.signin.aws.amazon.com/console
+
+### Useful
+- merge csv in mac: `cat *.csv >merged.csv`
+- merge csv in windows: `copy *.csv merged.csv`
