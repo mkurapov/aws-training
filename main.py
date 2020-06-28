@@ -31,9 +31,9 @@ script_path = 'scikit_learn_iris.py'
 
 sklearn = SKLearn(
     entry_point=script_path,
-    train_instance_type="ml.c4.xlarge",
-    role=role,
-    sagemaker_session=sagemaker_session
+    instance_count=3,
+    train_instance_type="ml.c4.xlarge", role=role,
+    sagemaker_session=sagemaker_session)
 
 # This is what does the actual training:
-# sklearn.fit({'train': train_input})
+sklearn.fit({'train': train_input})

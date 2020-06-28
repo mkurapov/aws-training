@@ -8,6 +8,9 @@ from sklearn.externals import joblib
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
+    # Hyperparameters are described here. In this simple example we are just including one hyperparameter.
+    parser.add_argument('--max_leaf_nodes', type=int, default=-1)
+
     # Sagemaker specific arguments. Defaults are set in the environment variables.
     parser.add_argument('--output-data-dir', type=str,
                         default=os.environ['SM_OUTPUT_DATA_DIR'])
@@ -33,9 +36,11 @@ if __name__ == '__main__':
     train_y = train_data.ix[:, 0]
     train_X = train_data.ix[:, 1:]
 
-    # Now use scikit-learn's decision tree classifier to train the model.
+    # Here we support a single hyperparameter, 'max_leaf_nodes'. Note that you can add as many
+    # as your training my require in the ArgumentParser above.
+    max_leaf_nodes = args.max_leaf_nodes
 
-    svm = svm.LinearSVC()
+    # Now use scikit-learn's decision tree classifier to train the model.
     clf = tree.DecisionTreeClassifier(max_leaf_nodes=max_leaf_nodes)
     clf = clf.fit(train_X, train_y)
 
