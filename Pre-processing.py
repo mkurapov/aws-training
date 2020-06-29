@@ -9,10 +9,10 @@ from nltk.corpus import stopwords
 import preprocessor as p
 import time
 
-# nlp = spacy.load('en_core_web_sm')
-# en_stopwords = stopwords.words("English")
-# extension = ["a", "I", "&amp;", "https", "http"]
-# strip_punctation_table = str.maketrans('', '', string.punctuation)
+nlp = spacy.load('en_core_web_sm')
+en_stopwords = stopwords.words("English")
+extension = ["a", "I", "&amp;", "https", "http"]
+strip_punctation_table = str.maketrans('', '', string.punctuation)
 
 sentimentDictionary = {
     "Neutral": "0",
@@ -21,31 +21,35 @@ sentimentDictionary = {
     "tag": "0"
 }
 
+
 def unique_list(l):
     ulist = []
     [ulist.append(x) for x in l if x not in ulist]
     return ulist
 
 
+def cleanup1(row):
+    if (pd.isna(row['text'])):
+        return row
 
+    tweet_text = row['text']
+    tweet_text = p.clean(tweet_text)
+    tweet_text = tweet_text.lower()
 
-# def cleanup1(row):
-#     tweet_text = row['text']
-#     tweet_text = p.clean(tweet_text)
-#     tweet_text = tweet_text.lower()
+    clean_words = []
+    for word in tweet_text.split():
+        if ((word not in en_stopwords) and (word not in extension)):
+            clean_word = word.translate(strip_punctation_table)
+            if (clean_word != ''):
+                clean_words.append(clean_word)
 
-#     clean_words = []
-#     for word in tweet_text.split():
-#         if ((word not in en_stopwords) and (word not in extension)):
-#             clean_word = word.translate(strip_punctation_table)
-#             if (clean_word != ''):
-#                 clean_words.append(clean_word)
+    clean_string = ' '.join(clean_words)
+    tweet_text = ' '.join(word.lemma_ for word in nlp(clean_string) if word.lemma_ !=
+                          '-PRON-')
 
-#     clean_string = ' '.join(clean_words)
-#     tweet_text = ' '.join(word.lemma_ for word in nlp(clean_string) if word.lemma_ !=
-#                           '-PRON-')
+    row['text'] = tweet_text
+    return row
 
-#     return tweet_text
 
 def filter_word(word):
     if len(word) == 1 or word == 'https':
@@ -53,13 +57,11 @@ def filter_word(word):
 
     return True
 
-### minimize tags, remove single char words, https, duplicate words
-def cleanup(row):
-    row['tag'] = sentimentDictionary[row['tag']]
-
+# minimize tags, remove single char words, https, duplicate words
+def cleanup2(row):
     if (pd.isna(row['text'])):
         return row
-    
+
     tweet_text = row['text']
     if (tweet_text == '' or tweet_text is None):
         return row
@@ -70,19 +72,25 @@ def cleanup(row):
 
     return row
 
-def process_df(df, count):
+def cleanup(row):
+    print(row.name)
+    cleanup1(row)
+    cleanup2(row)
+    return row
+
+def process_df(df):
     try:
-        df.drop(df.columns[[0]], axis=1, inplace=True)
         df = df.apply(cleanup, axis=1)
-        df.to_csv(f"output-2/chunk{count}.csv",
+        df.to_csv(f"output/test_data.csv",
                   sep=",", header=True, index=False)
     except Exception as e:
         print(e)
 
-
 CHUNK_SIZE = 100000
 count = CHUNK_SIZE
-df_chunks = pd.read_csv('data/merged.csv', chunksize=CHUNK_SIZE)
+
+df = df[['text']]
+process_df(df)
 
 for df in df_chunks:
     tic = time.perf_counter()
@@ -91,3 +99,6 @@ for df in df_chunks:
 
     print(f"Processed {count} rows in {toc - tic:0.4f} sec")
     count = count + CHUNK_SIZE
+
+
+### Copy column over
